@@ -83,6 +83,114 @@ int Debayer::DebayerContainer::WriteColored(const char *filename, DebayeringAlgo
                 }
             }
             break;
+        case BILINEAR:
+            int sumR,sumG,sumB;
+            for (unsigned int i = 0; i < height; i++) {
+                for (unsigned int j = 0; j < width; j++) {
+                    imOff = 3 * (i * width + j);
+                    grOff = (i / 2) * width / 2 + (j / 2);
+
+                    sumR = 0;
+                    sumG = 0;
+                    sumB = 0;
+
+                    if(i % 2 == 0 && j % 2 == 0) {
+
+                        result[imOff + 0] = red_Gr[(i / 2) * width / 2 + (j / 2)];
+                        if( j >= 1 ) {
+                            sumG += grn1Gr[(i / 2) * width / 2 + ((j - 1) / 2)];
+                        }
+                        if( j + 1 < width) {
+                            sumG += grn1Gr[(i / 2) * width / 2 + ((j + 1) / 2)];
+                        }
+                        if( i >= 1) {
+                            sumG += grn2Gr[((i - 1) / 2) * width / 2 + (j / 2)];
+                        }
+                        if( i + 1 < height) {
+                            sumG += grn2Gr[((i + 1) / 2) * width / 2 + (j / 2)];
+                        }
+                        if( i >=1 && j >= 1) {
+                            sumB += blueGr[((i - 1) / 2) * width / 2 + ((j - 1) / 2)];
+                        }
+                        if( i >= 1 && j + 1 < width) {
+                            sumB += blueGr[((i - 1) / 2) * width / 2 + ((j + 1) / 2)];
+                        }
+                        if( i + 1 < height && j >= 1) {
+                            sumB += blueGr[((i + 1) / 2) * width / 2 + ((j - 1) / 2)];
+                        }
+                        if( i + 1 < height && j + 1 < width ) {
+                            sumB += blueGr[((i + 1) / 2) * width / 2 + ((j + 1) / 2)];
+                        }
+                        result[imOff + 1] = sumG / 4;
+                        result[imOff + 2] = sumB / 4;
+
+                    } else if (i % 2 == 0 && j % 2 != 0) {
+
+                        if( j >= 1 ) {
+                            sumR += red_Gr[(i / 2) * width / 2 + ( (j - 1) / 2)];
+                        }
+                        if( j + 1 < width ) {
+                            sumR += red_Gr[(i / 2) * width / 2 + ((j + 1) / 2)];
+                        }
+                        if( i >= 1) {
+                            sumB += blueGr[((i - 1) / 2) * width / 2 + (j / 2)];
+                        }
+                        if( i + 1 < height ) {
+                            sumB += blueGr[((i + 1) / 2) * width / 2 + (j / 2)];
+                        }
+                        result[imOff + 0] = sumR / 2;
+                        result[imOff + 1] = grn1Gr[(i / 2) * width / 2 + (j / 2)];
+                        result[imOff + 2] = sumB / 2;
+                    } else if (i % 2 != 0 && j % 2 == 0) {
+                        if( j >= 1 ) {
+                            sumB += blueGr[(i / 2) * width / 2 + ( (j - 1) / 2)];
+                        }
+                        if( j + 1 < width ) {
+                            sumB += blueGr[(i / 2) * width / 2 + ((j + 1) / 2)];
+                        }
+                        if( i >= 1) {
+                            sumR += red_Gr[((i - 1) / 2) * width / 2 + (j / 2)];
+                        }
+                        if( i + 1 < height ) {
+                            sumR += red_Gr[((i + 1) / 2) * width / 2 + (j / 2)];
+                        }
+                        result[imOff + 0] = sumR / 2;
+                        result[imOff + 1] = grn2Gr[(i / 2) * width / 2 + (j / 2)];
+                        result[imOff + 2] = sumB / 2;
+
+                    } else {
+                        if( j >= 1 ) {
+                            sumG += grn2Gr[(i / 2) * width / 2 + ((j - 1) / 2)];
+                        }
+                        if( j + 1 < width) {
+                            sumG += grn2Gr[(i / 2) * width / 2 + ((j + 1) / 2)];
+                        }
+                        if( i >= 1) {
+                            sumG += grn1Gr[((i - 1) / 2) * width / 2 + (j / 2)];
+                        }
+                        if( i + 1 < height) {
+                            sumG += grn1Gr[((i + 1) / 2) * width / 2 + (j / 2)];
+                        }
+                        if( i >=1 && j >= 1) {
+                            sumR += red_Gr[((i - 1) / 2) * width / 2 + ((j - 1) / 2)];
+                        }
+                        if( i >= 1 && j + 1 < width) {
+                            sumR += red_Gr[((i - 1) / 2) * width / 2 + ((j + 1) / 2)];
+                        }
+                        if( i + 1 < height && j >= 1) {
+                            sumR += red_Gr[((i + 1) / 2) * width / 2 + ((j - 1) / 2)];
+                        }
+                        if( i + 1 < height && j + 1 < width ) {
+                            sumR += red_Gr[((i + 1) / 2) * width / 2 + ((j + 1) / 2)];
+                        }
+                        result[imOff + 0] = sumR / 4;
+                        result[imOff + 1] = sumG / 4;
+                        result[imOff + 2] = blueGr[(i / 2) * width / 2 + (j / 2)];
+
+                    }
+                }
+            }
+            break;
         default:
             break;
     }
