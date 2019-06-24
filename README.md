@@ -9,4 +9,8 @@ PiNG12RAW can be made to work easily using the following set of commands:
 make
 bin/DebayerImage.out
 ```
-After running these commands, one can see the debayered colored channels in `results` folder.
+You will be asked to select Debayering algorithm 
+1. LINEAR
+2. BILINEAR
+
+After running these commands and selecting desired algorithm, one can see the debayered colored channels in `results` folder.
